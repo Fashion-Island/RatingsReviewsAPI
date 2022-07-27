@@ -1,10 +1,10 @@
 const express = require('express');
-const { db } = require('./db/index.js');
+// const { db } = require('./db/index.js');
 
 const app = express();
 
 app.get('/reviews', (req, res) => {
-  console.log('Hellooooo');
+  console.log('Hello');
   res.end();
 });
 
