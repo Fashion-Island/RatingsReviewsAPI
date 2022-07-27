@@ -12,7 +12,7 @@ module.exports = {
   rules: {
     indent: ['error', 2],
     'import/extensions': ['error', 'ignorePackages', {
-      js: 'never',
+      js: 'off',
     }],
   },
 };
