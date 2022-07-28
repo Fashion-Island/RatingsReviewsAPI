@@ -1,7 +1,3 @@
-/*
-To run this file, in the command line: run `psql postgres -f ./db/schema.sql`
-*/
-
 DROP DATABASE IF EXISTS mydb;
 CREATE DATABASE mydb;
 
