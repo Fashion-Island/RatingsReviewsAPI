@@ -4,33 +4,22 @@ const { pool } = require('../db/index.js');
 
 // );
 
-const post = () => (
+// const post = () => (
 
-);
+// );
 
-/*
-Note: Is the JSON-ification of the outermost object necessary here
-since Express can handle it for us?
-*/
 const getOne = (productId) => (
   pool.query(`
-  SELECT json_build_object(
-    'product_id',
-    '${productId}',
-    'ratings',
-    (WITH ratingCountByGroup AS (SELECT rating, COUNT(*)::VARCHAR
-      FROM reviews WHERE product_id = ${productId} GROUP BY rating)
-      SELECT json_object_agg(rating, count) FROM ratingCountByGroup),
-    'recommended',
-    (WITH recommendedCountByGroup AS (SELECT recommended, COUNT(*)::VARCHAR
-      FROM reviews WHERE product_id = ${productId} GROUP BY recommended)
-      SELECT json_object_agg(recommended, count) FROM recommendedCountByGroup),
-    'characteristics',
+  WITH ratingRecommendedForProduct AS (SELECT rating, recommended FROM reviews WHERE product_id = ${productId})
+  SELECT * FROM (VALUES(
+    (WITH ratingCountByGroup AS (SELECT rating ratingForObj, COUNT(*)::VARCHAR ratingCountForObj FROM ratingRecommendedForProduct GROUP BY rating) SELECT json_object_agg(ratingForObj, ratingCountForObj) FROM ratingCountByGroup),
+    (WITH recommendedCountByGroup AS (SELECT recommended recommendedForObj, COUNT(*)::VARCHAR recommendedCountForObj FROM ratingRecommendedForProduct GROUP BY recommended) SELECT json_object_agg(recommendedForObj, recommendedCountForObj) FROM recommendedCountByGroup),
     (WITH featuresAvg AS (SELECT characteristics.name, characteristics.id, AVG(characteristic_reviews.value)
-      FROM characteristics RIGHT OUTER JOIN characteristic_reviews
-      ON characteristics.id = characteristic_reviews.characteristic_id
-      WHERE characteristics.product_id = ${productId} GROUP BY characteristics.id)
-      SELECT json_object_agg(name, json_build_object('id', id, 'value', avg::VARCHAR)) FROM featuresAvg))
+    FROM characteristics RIGHT OUTER JOIN characteristic_reviews
+    ON characteristics.id = characteristic_reviews.characteristic_id
+    WHERE characteristics.product_id = ${productId} GROUP BY characteristics.id)
+    SELECT json_object_agg(name, json_build_object('id', id, 'value', avg::VARCHAR)) FROM featuresAvg)
+  )) AS t(ratings, recommended, characteristics)
   `)
 );
 
@@ -44,7 +33,7 @@ const report = (reviewId) => (
 
 module.exports = {
   // getAll,
-  post,
+  // post,
   getOne,
   rateHelpful,
   report,

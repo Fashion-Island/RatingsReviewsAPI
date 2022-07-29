@@ -12,9 +12,11 @@ const getOne = (req, res) => {
   const productId = Number(req.query.product_id);
   return model.getOne(productId)
     .then((data) => {
-      res.set('content-type', 'application/json');
-      res.send(data.rows[0].json_build_object);
+      res.json(data.rows[0]);
       res.status(200).end();
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
