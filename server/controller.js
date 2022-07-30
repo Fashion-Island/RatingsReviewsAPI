@@ -1,7 +1,22 @@
 const model = require('./model.js');
 
 const getAll = (req, res) => {
-
+  let { product_id, page, count } = req.query;
+  const { sort } = req.query;
+  product_id = Number(product_id);
+  page = page === undefined ? 1 : Number(page);
+  count = count === undefined ? 5 : Number(count);
+  return model.getAll({
+    product_id, page, count, sort,
+  })
+    .then((data) => {
+      res.json(data.rows[0]);
+      res.status(200).end();
+    })
+    .catch((err) => {
+      res.send(err);
+      res.status(500).end();
+    });
 };
 
 const post = (req, res) => (
