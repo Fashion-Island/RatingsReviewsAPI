@@ -45,9 +45,6 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 \copy photos (id, review_id, url) FROM './db/rawdata/reviews_photos.csv' WITH (FORMAT csv, HEADER true);
 \copy characteristic_reviews (id, characteristic_id, review_id, value) FROM './db/rawdata/characteristic_reviews.csv' WITH (FORMAT csv, HEADER true);
 
--- ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING (date / 1000);
--- ALTER TABLE reviews ALTER COLUMN date TYPE VARCHAR(255) USING TO_CHAR(date, 'YYYY-MM-DD"T"HH24:MI:SS.MSOF"Z"');
-
 UPDATE reviews SET response = NULL WHERE response = 'null';
 
 

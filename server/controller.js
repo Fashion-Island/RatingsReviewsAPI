@@ -1,20 +1,21 @@
 const model = require('./model.js');
 
 const getAll = (req, res) => {
-  let { product_id, page, count } = req.query;
-  const { sort } = req.query;
+  let {
+    product_id, page, count, sort,
+  } = req.query;
   product_id = Number(product_id);
-  page = page === undefined ? 1 : Number(page);
-  if (count === undefined) {
-    count = 5;
-  } else if (count !== '*') {
-    count = Number(count);
-  }
+  page = Number(page) || 1;
+  count = Number(count) || 5;
+  sort = sort || 'relevant';
+
+  console.log('I got a GET request');
   return model.getAll({
     product_id, page, count, sort,
   })
     .then((data) => {
       res.send(data.rows[0]);
+      console.log('I could access the db');
       res.status(200).end();
     })
     .catch((err) => {

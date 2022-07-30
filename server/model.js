@@ -24,7 +24,25 @@ const getAll = ({
     SELECT * FROM (VALUES($1, ${page - 1}, ${count},
       (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
       'summary', summary, 'recommend', recommended, 'response', response, 'body', body,
-      'date', date, 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
+      'date', TO_TIMESTAMP(date / 1000), 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
+      (WITH images AS (SELECT id, url FROM photos WHERE review_id = individualRecord.id)
+        SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
+        FROM images), '[]'::json))))
+      FROM individualRecord)))
+    AS X (product, page, count, results);
+    `;
+  } else if (sort === 'relevant') {
+    // NOTE: THIS IS A DUMMY QUERY TO TEST FRONT-END INTEGRATION
+    queryStmnt = `
+    WITH individualRecord AS (
+      SELECT id, rating, summary, recommended, response, body, date, reviewer_name,
+      helpfulness, reported FROM reviews WHERE product_id = $1 AND reported = False
+      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'} DESC LIMIT ${count} OFFSET $2
+    )
+    SELECT * FROM (VALUES($1, ${page - 1}, ${count},
+      (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
+      'summary', summary, 'recommend', recommended, 'response', response, 'body', body,
+      'date', TO_TIMESTAMP(date), 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
       (WITH images AS (SELECT id, url FROM photos WHERE review_id = individualRecord.id)
         SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
         FROM images), '[]'::json))))
@@ -40,7 +58,7 @@ const getAll = ({
 const post = ({
   product_id, rating, summary, body, recommend, name, email, photos, characteristics,
 }) => {
-  const date = 9999; // FIX DATE FORMAT LATER
+  const date = Math.round((new Date()).getTime());
   let queryStmnt;
   let values = [product_id, rating, summary, body, recommend, name, email, date, false,
     0, characteristics];
