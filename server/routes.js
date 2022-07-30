@@ -4,7 +4,7 @@ const controller = require('./controller.js');
 const router = express.Router();
 
 router.route('/')
-//   .get(controller.getAll)
+  .get(controller.getAll)
   .post(controller.post);
 
 router.route('/meta')

@@ -1,24 +1,23 @@
 const { pool } = require('../db/index.js');
 
-// const getAll = () => (
+const getAll = () => {
 
-// );
+
+};
 
 const post = ({
   product_id, rating, summary, body, recommend, name, email, photos, characteristics,
 }) => {
-  let queryStmnt;
-  let values;
-
   const date = 9999; // FIX DATE FORMAT LATER
+  let queryStmnt;
+  let values = [product_id, rating, summary, body, recommend, name, email, date, false,
+    0, characteristics];
 
   if (photos.length === 0) {
-    values = [product_id, rating, summary, body, recommend,
-      name, email, date, false, 0, characteristics];
-
     queryStmnt = `
     WITH reviewsInsert AS (
-      INSERT INTO reviews (product_id, rating, summary, body, recommended, reviewer_name, reviewer_email, date, reported, helpfulness)
+      INSERT INTO reviews (product_id, rating, summary, body, recommended,
+        reviewer_name, reviewer_email, date, reported, helpfulness)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING id AS reviewId
     ),
@@ -27,14 +26,26 @@ const post = ({
     SELECT (SELECT reviewId FROM reviewsInsert), key::bigint, value::integer FROM keyValPair
     `;
   } else {
+    values = values.concat([photos]);
 
+    queryStmnt = `
+    WITH reviewsInsert AS (
+      INSERT INTO reviews (product_id, rating, summary, body, recommended,
+        reviewer_name, reviewer_email, date, reported, helpfulness)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id AS reviewId
+    ),
+    keyValPair AS (SELECT * FROM json_each_text($11)),
+    characteristicReviewsInsert AS (
+      INSERT INTO characteristic_reviews (review_id, characteristic_id, value)
+      SELECT (SELECT reviewId FROM reviewsInsert), key::bigint, value::integer FROM keyValPair
+    )
+    INSERT INTO photos (review_id, url)
+    SELECT (SELECT reviewId FROM reviewsInsert), unnest($12::text[])
+    `;
   }
 
-
-
-
-  return pool.query(queryStmnt, values)
-    .catch(err => { console.log(err); });
+  return pool.query(queryStmnt, values);
 };
 
 const getOne = (productId) => (
@@ -68,6 +79,5 @@ const report = (reviewId) => (
 );
 
 module.exports = {
-  // getAll,
-  post, getOne, rateHelpful, report,
+  getAll, post, getOne, rateHelpful, report,
 };

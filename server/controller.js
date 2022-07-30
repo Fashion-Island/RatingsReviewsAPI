@@ -1,8 +1,8 @@
 const model = require('./model.js');
 
-// const getAll = () => {
+const getAll = (req, res) => {
 
-// };
+};
 
 const post = (req, res) => (
   model.post(req.body)
@@ -53,6 +53,5 @@ const report = (req, res) => {
 };
 
 module.exports = {
-  // getAll,
-  post, getOne, rateHelpful, report,
+  getAll, post, getOne, rateHelpful, report,
 };
