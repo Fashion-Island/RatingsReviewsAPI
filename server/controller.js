@@ -4,9 +4,16 @@ const model = require('./model.js');
 
 // };
 
-const post = () => {
-
-};
+const post = (req, res) => (
+  model.post(req.body)
+    .then(() => {
+      res.status(201).end();
+    })
+    .catch((err) => {
+      res.send(err);
+      res.status(500).end();
+    })
+);
 
 const getOne = (req, res) => {
   const productId = Number(req.query.product_id);
@@ -16,7 +23,8 @@ const getOne = (req, res) => {
       res.status(200).end();
     })
     .catch((err) => {
-      console.log(err);
+      res.send(err);
+      res.status(500).end();
     });
 };
 
@@ -25,6 +33,10 @@ const rateHelpful = (req, res) => {
   return model.rateHelpful(reviewId)
     .then(() => {
       res.status(204).end();
+    })
+    .catch((err) => {
+      res.send(err);
+      res.status(500).end();
     });
 };
 
@@ -33,6 +45,10 @@ const report = (req, res) => {
   return model.report(reviewId)
     .then(() => {
       res.status(204).end();
+    })
+    .catch((err) => {
+      res.send(err);
+      res.status(500).end();
     });
 };
 

@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 \copy photos (id, review_id, url) FROM './db/rawdata/reviews_photos.csv' WITH (FORMAT csv, HEADER true);
 \copy characteristic_reviews (id, characteristic_id, review_id, value) FROM './db/rawdata/characteristic_reviews.csv' WITH (FORMAT csv, HEADER true);
 
--- ALTER TABLE reviews ALTER COLUMN date TYPE timestamp USING TO_TIMESTAMP(date / 1000) AT TIMEZONE 'utc';
+-- ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING (date / 1000);
+-- ALTER TABLE reviews ALTER COLUMN date TYPE VARCHAR(255) USING TO_CHAR(date, 'YYYY-MM-DD"T"HH24:MI:SS.MSOF"Z"');
+
 
 SELECT setval(pg_get_serial_sequence('characteristics', 'id'), coalesce(max(id)+1, 1), false) FROM characteristics;
 SELECT setval(pg_get_serial_sequence('characteristic_reviews', 'id'), coalesce(max(id)+1, 1), false) FROM characteristic_reviews;
