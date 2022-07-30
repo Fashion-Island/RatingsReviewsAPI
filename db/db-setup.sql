@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 -- ALTER TABLE reviews ALTER COLUMN date TYPE TIMESTAMP USING (date / 1000);
 -- ALTER TABLE reviews ALTER COLUMN date TYPE VARCHAR(255) USING TO_CHAR(date, 'YYYY-MM-DD"T"HH24:MI:SS.MSOF"Z"');
 
+UPDATE reviews SET response = NULL WHERE response = 'null';
+
 
 SELECT setval(pg_get_serial_sequence('characteristics', 'id'), coalesce(max(id)+1, 1), false) FROM characteristics;
 SELECT setval(pg_get_serial_sequence('characteristic_reviews', 'id'), coalesce(max(id)+1, 1), false) FROM characteristic_reviews;

@@ -3,29 +3,23 @@ const { pool } = require('../db/index.js');
 const getAll = ({
   count, page, sort, product_id
 }) => {
-  /* Still need to figure out logic of sorting
-  newest - latest date first
-  helpful - helpfulness TRUE minus helpfulness FALSE max
+  /* Still need to figure out logic of sorting for relevant case
   relevant - recent reviews appear near the top, but do not outweigh
   reviews that have been found helpful. Similarly, reviews that have
   been helpful should appear near the top, but should yield to more
   recent reviews if they are older.
   */
-
-  /* null is currently received as a string ~ res.send vs res.json does not
-  change this.
-  */
   let queryStmnt;
 
   const offset = count * (page - 1);
-  const values = [product_id, offset];
+  let values = [product_id, offset];
 
-  if (sort === 'newest') {
+  if (sort === 'newest' || sort === 'helpful') {
     queryStmnt = `
     WITH individualRecord AS (
       SELECT id, rating, summary, recommended, response, body, date, reviewer_name,
       helpfulness, reported FROM reviews WHERE product_id = $1 AND reported = False
-      ORDER BY date DESC LIMIT ${count} OFFSET $2
+      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'} DESC LIMIT ${count} OFFSET $2
     )
     SELECT * FROM (VALUES($1, ${page - 1}, ${count},
       (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
@@ -65,7 +59,7 @@ const post = ({
     FROM keyValPair
     `;
   } else {
-    values = values.concat([photos]);
+    values.push(photos);
 
     queryStmnt = `
     WITH reviewsInsert AS (

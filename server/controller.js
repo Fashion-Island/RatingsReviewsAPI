@@ -5,7 +5,11 @@ const getAll = (req, res) => {
   const { sort } = req.query;
   product_id = Number(product_id);
   page = page === undefined ? 1 : Number(page);
-  count = count === undefined ? 5 : Number(count);
+  if (count === undefined) {
+    count = 5;
+  } else if (count !== '*') {
+    count = Number(count);
+  }
   return model.getAll({
     product_id, page, count, sort,
   })
