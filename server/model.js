@@ -12,7 +12,9 @@ const getAll = ({
   recent reviews if they are older.
   */
 
-  /* null is currently treated as a string */
+  /* null is currently received as a string ~ res.send vs res.json does not
+  change this.
+  */
   let queryStmnt;
 
   const offset = count * (page - 1);
@@ -28,14 +30,17 @@ const getAll = ({
     SELECT * FROM (VALUES($1, ${page - 1}, ${count},
       (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
       'summary', summary, 'recommend', recommended, 'response', response, 'body', body,
-      'date', date, 'reviewer_name', reviewer_name, 'helpfulness', helpfulness))
+      'date', date, 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
+      (WITH images AS (SELECT id, url FROM photos WHERE review_id = individualRecord.id)
+        SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
+        FROM images), '[]'::json))))
       FROM individualRecord)))
     AS X (product, page, count, results);
     `;
   }
 
   return pool.query(queryStmnt, values)
-    .catch((err) => { console.log(err) });
+    .catch((err) => { console.log(err); });
 };
 
 const post = ({

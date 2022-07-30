@@ -10,7 +10,7 @@ const getAll = (req, res) => {
     product_id, page, count, sort,
   })
     .then((data) => {
-      res.json(data.rows[0]);
+      res.send(data.rows[0]);
       res.status(200).end();
     })
     .catch((err) => {
@@ -34,7 +34,7 @@ const getOne = (req, res) => {
   const productId = Number(req.query.product_id);
   return model.getOne(productId)
     .then((data) => {
-      res.json(data.rows[0]);
+      res.send(data.rows[0]);
       res.status(200).end();
     })
     .catch((err) => {
