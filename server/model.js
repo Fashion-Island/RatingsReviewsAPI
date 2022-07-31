@@ -95,6 +95,7 @@ const getOne = (productId) => (
   WITH ratingRecommendedForProduct AS (
     SELECT rating, recommended FROM reviews WHERE product_id = ${productId})
   SELECT * FROM (VALUES(
+    ${productId}::VARCHAR,
     (WITH ratingCountByGroup AS
       (SELECT rating ratingForObj, COUNT(*)::VARCHAR ratingCountForObj
       FROM ratingRecommendedForProduct GROUP BY rating)
@@ -113,7 +114,7 @@ const getOne = (productId) => (
       SELECT json_object_agg(name, json_build_object('id', id, 'value', avg::VARCHAR))
       FROM featuresAvg)
     )
-  ) AS t(ratings, recommended, characteristics)
+  ) AS tempTable (product_id, ratings, recommended, characteristics)
   `)
 );
 
