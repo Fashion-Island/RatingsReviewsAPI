@@ -14,6 +14,9 @@ const getAll = ({
   const offset = count * (page - 1);
   let values = [product_id, offset];
 
+  /* next step: try joining reviews and photos tables to compare
+  lookup speed with this sub-query approach
+  */
   if (sort === 'newest' || sort === 'helpful') {
     queryStmnt = `
       SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
@@ -40,7 +43,6 @@ const getAll = ({
   }
 
   return pool.query(queryStmnt, values)
-    .catch((err) => { console.log(err); });
 };
 
 const post = ({

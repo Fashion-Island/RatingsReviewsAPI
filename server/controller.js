@@ -9,14 +9,10 @@ const getAll = (req, res) => {
   count = Number(count) || 5;
   sort = sort || 'relevant';
 
-  console.log('I got a GET request');
   return model.getAll({
     product_id, page, count, sort,
   })
     .then((data) => {
-      // res.send(data.rows[0]);
-      console.log('I could access the db');
-      // console.log(data.rows);
       res.send({
         product: product_id.toString(),
         page: page - 1,
