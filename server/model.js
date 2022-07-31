@@ -16,38 +16,26 @@ const getAll = ({
 
   if (sort === 'newest' || sort === 'helpful') {
     queryStmnt = `
-    WITH individualRecord AS (
-      SELECT id, rating, summary, recommended, response, body, date, reviewer_name,
-      helpfulness, reported FROM reviews WHERE product_id = $1 AND reported = False
-      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'} DESC LIMIT ${count} OFFSET $2
-    )
-    SELECT * FROM (VALUES($1, ${page - 1}, ${count},
-      (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
-      'summary', summary, 'recommend', recommended, 'response', response, 'body', body,
-      'date', TO_TIMESTAMP(date / 1000), 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
-      (WITH images AS (SELECT id, url FROM photos WHERE review_id = individualRecord.id)
+      SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
+      response, body, (TO_TIMESTAMP(date / 1000)) as date, reviewer_name, helpfulness,
+      (WITH images AS (SELECT id, url FROM photos WHERE review_id = reviews.id)
         SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
-        FROM images), '[]'::json))))
-      FROM individualRecord)))
-    AS X (product, page, count, results);
+        FROM images), '[]'::json)) as photos
+      FROM reviews WHERE product_id = $1 AND reported = False
+      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'}
+      DESC LIMIT ${count} OFFSET $2
     `;
   } else if (sort === 'relevant') {
     // NOTE: THIS IS A DUMMY QUERY TO TEST FRONT-END INTEGRATION
     queryStmnt = `
-    WITH individualRecord AS (
-      SELECT id, rating, summary, recommended, response, body, date, reviewer_name,
-      helpfulness, reported FROM reviews WHERE product_id = $1 AND reported = False
-      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'} DESC LIMIT ${count} OFFSET $2
-    )
-    SELECT * FROM (VALUES($1, ${page - 1}, ${count},
-      (SELECT json_agg(json_build_object('review_id', id, 'rating', rating,
-      'summary', summary, 'recommend', recommended, 'response', response, 'body', body,
-      'date', TO_TIMESTAMP(date), 'reviewer_name', reviewer_name, 'helpfulness', helpfulness, 'photos',
-      (WITH images AS (SELECT id, url FROM photos WHERE review_id = individualRecord.id)
+      SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
+      response, body, (TO_TIMESTAMP(date / 1000)) as date, reviewer_name, helpfulness,
+      (WITH images AS (SELECT id, url FROM photos WHERE review_id = reviews.id)
         SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
-        FROM images), '[]'::json))))
-      FROM individualRecord)))
-    AS X (product, page, count, results);
+        FROM images), '[]'::json)) as photos
+      FROM reviews WHERE product_id = $1 AND reported = False
+      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'}
+      DESC LIMIT ${count} OFFSET $2
     `;
   }
 

@@ -14,8 +14,15 @@ const getAll = (req, res) => {
     product_id, page, count, sort,
   })
     .then((data) => {
-      res.send(data.rows[0]);
+      // res.send(data.rows[0]);
       console.log('I could access the db');
+      // console.log(data.rows);
+      res.send({
+        product: product_id.toString(),
+        page: page - 1,
+        count,
+        results: data.rows,
+      });
       res.status(200).end();
     })
     .catch((err) => {
