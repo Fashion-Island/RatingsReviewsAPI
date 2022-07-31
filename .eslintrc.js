@@ -13,6 +13,7 @@ module.exports = {
     indent: ['error', 2],
     'import/extensions': ['error', 'ignorePackages', {
       js: 'off',
+      camelcase: 'off',
     }],
   },
 };

@@ -12,7 +12,7 @@ const getAll = ({
   let queryStmnt;
 
   const offset = count * (page - 1);
-  let values = [product_id, offset];
+  const values = [product_id, offset];
 
   /* next step: try joining reviews and photos tables to compare
   lookup speed with this sub-query approach
@@ -42,7 +42,7 @@ const getAll = ({
     `;
   }
 
-  return pool.query(queryStmnt, values)
+  return pool.query(queryStmnt, values);
 };
 
 const post = ({
