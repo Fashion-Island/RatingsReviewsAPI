@@ -1,7 +1,7 @@
 const { pool } = require('../db/index.js');
 
 const getAll = ({
-  count, page, sort, product_id
+  count, page, sort, product_id,
 }) => {
   /* Still need to figure out logic of sorting for relevant case
   relevant - recent reviews appear near the top, but do not outweigh
@@ -50,7 +50,7 @@ const post = ({
 }) => {
   const date = Math.round((new Date()).getTime());
   let queryStmnt;
-  let values = [product_id, rating, summary, body, recommend, name, email, date, false,
+  const values = [product_id, rating, summary, body, recommend, name, email, date, false,
     0, characteristics];
 
   if (photos.length === 0) {

@@ -11,9 +11,9 @@ module.exports = {
   },
   rules: {
     indent: ['error', 2],
+    camelcase: 'off',
     'import/extensions': ['error', 'ignorePackages', {
       js: 'off',
-      camelcase: 'off',
     }],
   },
 };
