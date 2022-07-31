@@ -14,8 +14,7 @@ const getAll = ({
   const offset = count * (page - 1);
   const values = [product_id, offset];
 
-  /* next step: try joining reviews and photos tables to compare
-  lookup speed with this sub-query approach
+  /* could also try joining reviews and photos tables as opposed to this sub-query approach
   */
   if (sort === 'newest' || sort === 'helpful') {
     queryStmnt = `
@@ -117,6 +116,30 @@ const getOne = (productId) => (
   ) AS tempTable (product_id, ratings, recommended, characteristics)
   `)
 );
+
+WITH ratingRecommendedForProduct AS (
+  SELECT rating, recommended FROM reviews WHERE product_id = 975182)
+SELECT * FROM (VALUES(
+  975182::VARCHAR,
+  (WITH ratingCountByGroup AS
+    (SELECT rating ratingForObj, COUNT(*)::VARCHAR ratingCountForObj
+    FROM ratingRecommendedForProduct GROUP BY rating)
+    SELECT json_object_agg(ratingForObj, ratingCountForObj) FROM ratingCountByGroup
+  ),
+  (WITH recommendedCountByGroup AS
+    (SELECT recommended recommendedForObj, COUNT(*)::VARCHAR recommendedCountForObj
+    FROM ratingRecommendedForProduct GROUP BY recommended)
+    SELECT json_object_agg(recommendedForObj, recommendedCountForObj)
+    FROM recommendedCountByGroup),
+  (WITH featuresAvg AS
+    (SELECT characteristics.name, characteristics.id, AVG(characteristic_reviews.value)
+    FROM characteristics RIGHT OUTER JOIN characteristic_reviews
+    ON characteristics.id = characteristic_reviews.characteristic_id
+    WHERE characteristics.product_id = 975182 GROUP BY characteristics.id)
+    SELECT json_object_agg(name, json_build_object('id', id, 'value', avg::VARCHAR))
+    FROM featuresAvg)
+  )
+) AS tempTable (product_id, ratings, recommended, characteristics);
 
 const rateHelpful = (reviewId) => (
   pool.query(`UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = ${reviewId}`)

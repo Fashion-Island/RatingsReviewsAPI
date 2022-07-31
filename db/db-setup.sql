@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   response text,
   helpfulness integer not null DEFAULT 0
 );
+-- NOTE that date in reviews will be stored as BIGINT and converted to timestamp only upon responding to a GET request
 
 CREATE TABLE IF NOT EXISTS photos (
   id bigserial primary key,
@@ -45,10 +46,17 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 \copy photos (id, review_id, url) FROM './db/rawdata/reviews_photos.csv' WITH (FORMAT csv, HEADER true);
 \copy characteristic_reviews (id, characteristic_id, review_id, value) FROM './db/rawdata/characteristic_reviews.csv' WITH (FORMAT csv, HEADER true);
 
+-- Old data that is copied over has "null" as a string stored as opposed to null as a data type
 UPDATE reviews SET response = NULL WHERE response = 'null';
 
-
+-- Reset sequences that are out of sync due to overwriting columns of the serial data type
 SELECT setval(pg_get_serial_sequence('characteristics', 'id'), coalesce(max(id)+1, 1), false) FROM characteristics;
 SELECT setval(pg_get_serial_sequence('characteristic_reviews', 'id'), coalesce(max(id)+1, 1), false) FROM characteristic_reviews;
 SELECT setval(pg_get_serial_sequence('photos', 'id'), coalesce(max(id)+1, 1), false) FROM photos;
 SELECT setval(pg_get_serial_sequence('reviews', 'id'), coalesce(max(id)+1, 1), false) FROM reviews;
+
+
+CREATE INDEX charIndOnCharRev ON characteristic_reviews (characteristic_id);
+CREATE INDEX prodIndOnChar ON characteristics (product_id);
+CREATE INDEX prodIndOnRev ON reviews (product_id);
+CREATE INDEX revIndOnPhotos ON photos (review_id);
