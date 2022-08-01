@@ -4,9 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
     "dev-server": "nodemon ./server/index.js",
-    "db-setup": "psql postgres -f ./db/db-setup.sql"
+    "db-setup": "psql postgres -f ./db/db-setup.sql",
+    "unit-test": "jest",
+    "local-stress-test": "k6 run ./tests/local_stress_test.js"
   },
   "repository": {
     "type": "git",

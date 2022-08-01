@@ -105,7 +105,7 @@ describe('GET multiple reviews for a product', () => {
           review_id: 2812836,
           rating: 5,
           summary: 'Aliquid assumenda eaque natus.',
-          body: `Molestiae rerum est aut ut quia veritatis labore velit quo. Soluta omnis sunt dignissimos. Aut aspernatur recusandae qui et voluptas aut dolor ad corrupti. Voluptatibus repellat laborum et vitae.`,
+          body: 'Molestiae rerum est aut ut quia veritatis labore velit quo. Soluta omnis sunt dignissimos. Aut aspernatur recusandae qui et voluptas aut dolor ad corrupti. Voluptatibus repellat laborum et vitae.',
           recommend: true,
           response: null,
           date: '2021-02-27T02:06:11.000Z',
@@ -113,7 +113,7 @@ describe('GET multiple reviews for a product', () => {
           helpfulness: 10,
           photos: [{
             id: 1334466,
-            url: `https://images.unsplash.com/photo-1534960680480-ca9853707e10?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2384&q=80`,
+            url: 'https://images.unsplash.com/photo-1534960680480-ca9853707e10?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2384&q=80',
           }],
         };
 
