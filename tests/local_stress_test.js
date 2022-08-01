@@ -16,10 +16,20 @@ Points to consider:
 - proportions of VUs distributed under the different scenarios at any given point
 - ramping time
 Both of these need to model after real traffic's data, which we don't have
+
+In ideal testing circumstances, should log out stats from each stage for more
+in-depth analysis of RPS rate & load correlation. But will skip that for now.
 */
 
 export const options = {
   scenarios: {
+    /*
+    setup if using ramping-vus option
+    with this option, each VUs make a max # of iterations
+    during allotted time
+    */
+
+    /*
     initialLoad: {
       exec: 'initialLoad',
       executor: 'ramping-vus',
@@ -30,10 +40,10 @@ export const options = {
         { duration: '5m', target: 500 },
         { duration: '2m', target: 1000 },
         { duration: '5m', target: 1000 },
-        // { duration: '2m', target: 5000 },
-        // { duration: '5m', target: 5000 },
-        // { duration: '2m', target: 10000 },
-        // { duration: '5m', target: 10000 },
+        { duration: '2m', target: 5000 },
+        { duration: '5m', target: 5000 },
+        { duration: '2m', target: 10000 },
+        { duration: '5m', target: 10000 },
         { duration: '10m', target: 0 },
       ],
     },
@@ -47,10 +57,58 @@ export const options = {
         { duration: '5m', target: 500 },
         { duration: '2m', target: 1000 },
         { duration: '5m', target: 1000 },
-        // { duration: '2m', target: 5000 },
-        // { duration: '5m', target: 5000 },
-        // { duration: '2m', target: 10000 },
-        // { duration: '5m', target: 10000 },
+        { duration: '2m', target: 5000 },
+        { duration: '5m', target: 5000 },
+        { duration: '2m', target: 10000 },
+        { duration: '5m', target: 10000 },
+        { duration: '10m', target: 0 },
+      ],
+    },
+    */
+    initialLoad: {
+      exec: 'initialLoad',
+      executor: 'ramping-arrival-rate',
+      preAllocatedVUs: 60,
+      maxVUs: 180000,
+      timeUnit: '1m',
+      stages: [
+        // 1 iteration per second
+        { duration: '2m', target: 60 },
+        { duration: '5m', target: 60 },
+        // 10 iterations per second
+        { duration: '2m', target: 600 },
+        { duration: '5m', target: 600 },
+        // 100 iterations per second
+        { duration: '2m', target: 6000 },
+        { duration: '5m', target: 6000 },
+        // 1000 iterations per second
+        { duration: '2m', target: 60000 },
+        { duration: '5m', target: 60000 },
+        // 3000 iterations per second
+        { duration: '2m', target: 180000 },
+        { duration: '5m', target: 180000 },
+        // cool down
+        { duration: '10m', target: 0 },
+      ],
+    },
+    // assuming 1 out of 5 users will want to change default sort setting
+    switchSortOption: {
+      exec: 'switchSortOption',
+      executor: 'ramping-arrival-rate',
+      preAllocatedVUs: 15,
+      maxVUs: 45000,
+      timeUnit: '1m',
+      stages: [
+        { duration: '2m', target: 15 },
+        { duration: '5m', target: 15 },
+        { duration: '2m', target: 150 },
+        { duration: '5m', target: 150 },
+        { duration: '2m', target: 1500 },
+        { duration: '5m', target: 1500 },
+        { duration: '2m', target: 15000 },
+        { duration: '5m', target: 15000 },
+        { duration: '2m', target: 45000 },
+        { duration: '5m', target: 45000 },
         { duration: '10m', target: 0 },
       ],
     },
