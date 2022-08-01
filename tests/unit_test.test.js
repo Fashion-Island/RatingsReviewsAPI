@@ -9,7 +9,6 @@ describe('GET multiple reviews for a product', () => {
       .query({
         product_id: 486887,
       })
-      .expect('Content-Type', /json/)
       .expect(200);
   });
 
