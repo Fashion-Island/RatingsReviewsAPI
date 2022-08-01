@@ -3,43 +3,37 @@ const { pool } = require('../db/index.js');
 const getAll = ({
   count, page, sort, product_id,
 }) => {
-  /* Still need to figure out logic of sorting for relevant case
-  relevant - recent reviews appear near the top, but do not outweigh
-  reviews that have been found helpful. Similarly, reviews that have
-  been helpful should appear near the top, but should yield to more
-  recent reviews if they are older.
-  */
-  let queryStmnt;
+  let sortCondition;
 
-  const offset = count * (page - 1);
-  const values = [product_id, offset];
-
-  /* could also try joining reviews and photos tables as opposed to this sub-query approach
-  */
-  if (sort === 'newest' || sort === 'helpful') {
-    queryStmnt = `
-      SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
-      response, body, (TO_TIMESTAMP(date / 1000)) as date, reviewer_name, helpfulness,
-      (WITH images AS (SELECT id, url FROM photos WHERE review_id = reviews.id)
-        SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
-        FROM images), '[]'::json)) as photos
-      FROM reviews WHERE product_id = $1 AND reported = False
-      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'}
-      DESC LIMIT ${count} OFFSET $2
-    `;
-  } else if (sort === 'relevant') {
-    // NOTE: THIS IS A DUMMY QUERY TO TEST FRONT-END INTEGRATION
-    queryStmnt = `
-      SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
-      response, body, (TO_TIMESTAMP(date / 1000)) as date, reviewer_name, helpfulness,
-      (WITH images AS (SELECT id, url FROM photos WHERE review_id = reviews.id)
-        SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
-        FROM images), '[]'::json)) as photos
-      FROM reviews WHERE product_id = $1 AND reported = False
-      ORDER BY ${sort === 'newest' ? 'date' : 'helpfulness'}
-      DESC LIMIT ${count} OFFSET $2
-    `;
+  switch (true) {
+  case (sort === 'newest'):
+    sortCondition = 'date DESC, id ASC';
+    break;
+  case (sort === 'helpful'):
+    sortCondition = 'helpfulness DESC, id ASC';
+    break;
+  case (sort === 'relevant'):
+    sortCondition = 'date DESC, helpfulness DESC, id ASC';
+    break;
+  default:
+    sortCondition = 'date DESC, helpfulness DESC, id ASC';
+    break;
   }
+  const offset = count * (page - 1);
+  const values = [product_id, count, offset];
+
+  /*
+  could also try joining reviews and photos tables as opposed to this sub-query approach
+  */
+  const queryStmnt = `
+      SELECT id::integer AS review_id, rating, summary, recommended AS recommend,
+      response, body, (TO_TIMESTAMP(date / 1000)) as date, reviewer_name, helpfulness,
+      (WITH images AS (SELECT id, url FROM photos WHERE review_id = reviews.id)
+        SELECT COALESCE((SELECT JSON_AGG(json_build_object('id', id, 'url', url))
+        FROM images), '[]'::json)) as photos
+      FROM reviews WHERE product_id = $1 AND reported = False
+      ORDER BY ${sortCondition} LIMIT $2 OFFSET $3
+  `;
 
   return pool.query(queryStmnt, values);
 };
