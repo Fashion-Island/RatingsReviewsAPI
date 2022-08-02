@@ -29,7 +29,6 @@ export const options = {
     during allotted time
     */
 
-    /*
     initialLoad: {
       exec: 'initialLoad',
       executor: 'ramping-vus',
@@ -64,7 +63,11 @@ export const options = {
         { duration: '10m', target: 0 },
       ],
     },
-    */
+
+  /*
+    setup if using ramping-arrival-rate option
+  */
+   /*
     initialLoad: {
       exec: 'initialLoad',
       executor: 'ramping-arrival-rate',
@@ -73,22 +76,18 @@ export const options = {
       timeUnit: '1m',
       stages: [
         // 1 iteration per second
-        { duration: '2m', target: 60 },
         { duration: '5m', target: 60 },
+        // { duration: '5m', target: 60 },
         // 10 iterations per second
-        { duration: '2m', target: 600 },
         { duration: '5m', target: 600 },
+        // { duration: '5m', target: 600 },
         // 100 iterations per second
-        { duration: '2m', target: 6000 },
-        { duration: '5m', target: 6000 },
+        { duration: '10m', target: 6000 },
+        // { duration: '5m', target: 6000 },
         // 1000 iterations per second
-        { duration: '2m', target: 60000 },
-        { duration: '5m', target: 60000 },
-        // 3000 iterations per second
-        { duration: '2m', target: 180000 },
-        { duration: '5m', target: 180000 },
+        { duration: '10m', target: 60000 },
         // cool down
-        { duration: '10m', target: 0 },
+        { duration: '2m', target: 0 },
       ],
     },
     // assuming 1 out of 5 users will want to change default sort setting
@@ -99,20 +98,21 @@ export const options = {
       maxVUs: 45000,
       timeUnit: '1m',
       stages: [
-        { duration: '2m', target: 15 },
         { duration: '5m', target: 15 },
-        { duration: '2m', target: 150 },
+        // { duration: '5m', target: 15 },
         { duration: '5m', target: 150 },
-        { duration: '2m', target: 1500 },
+        // { duration: '5m', target: 150 },
         { duration: '5m', target: 1500 },
-        { duration: '2m', target: 15000 },
-        { duration: '5m', target: 15000 },
-        { duration: '2m', target: 45000 },
-        { duration: '5m', target: 45000 },
-        { duration: '10m', target: 0 },
+        // { duration: '5m', target: 1500 },
+        { duration: '10m', target: 15000 },
+        // { duration: '5m', target: 15000 },
+        // { duration: '1m', target: 45000 },
+        // { duration: '5m', target: 45000 },
+        { duration: '2m', target: 0 },
       ],
     },
   },
+  */
 };
 
 export function initialLoad() {
