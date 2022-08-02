@@ -63,12 +63,12 @@ export const options = {
         { duration: '10m', target: 0 },
       ],
     },
-  }
+  },
 
   /*
     setup if using ramping-arrival-rate option
   */
-   /*
+  /*
     initialLoad: {
       exec: 'initialLoad',
       executor: 'ramping-arrival-rate',
