@@ -103,7 +103,7 @@ const getOne = (productId) => (
       (SELECT characteristics.name, characteristics.id, AVG(characteristic_reviews.value)
       FROM characteristics RIGHT OUTER JOIN characteristic_reviews
       ON characteristics.id = characteristic_reviews.characteristic_id
-      WHERE characteristics.product_id = ${productId} GROUP BY characteristics.id)
+      WHERE characteristics.product_id = ${productId} GROUP BY characteristics.id, characteristics.name)
       SELECT json_object_agg(name, json_build_object('id', id, 'value', avg::VARCHAR))
       FROM featuresAvg)
     )
