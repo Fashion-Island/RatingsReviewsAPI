@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = require('./routes.js');
 
@@ -7,6 +9,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/reviews', router);
 
-app.listen(3000, () => {
-  console.log('Serving port 3000');
+app.listen(process.env.SERVER_PORT, () => {
+  console.log(`Serving port ${process.env.SERVER_PORT}`);
 });
