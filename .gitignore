@@ -1,4 +1,4 @@
 node_modules
 db/rawdata
-db/atelier-rr-db.pgsql
+db/atelier-rr-db-v2.pgsql
 .env
