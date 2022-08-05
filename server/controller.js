@@ -13,17 +13,15 @@ const getAll = (req, res) => {
     product_id, page, count, sort,
   })
     .then((data) => {
-      res.send({
+      res.status(200).send({
         product: product_id.toString(),
         page: page - 1,
         count,
         results: data.rows,
       });
-      res.status(200).end();
     })
     .catch((err) => {
-      res.send(err);
-      res.status(500).end();
+      res.status(500).send(err);
     });
 };
 
@@ -33,8 +31,7 @@ const post = (req, res) => (
       res.status(201).end();
     })
     .catch((err) => {
-      res.send(err);
-      res.status(500).end();
+      res.status(500).send(err);
     })
 );
 
@@ -42,12 +39,10 @@ const getOne = (req, res) => {
   const productId = Number(req.query.product_id);
   return model.getOne(productId)
     .then((data) => {
-      res.send(data.rows[0]);
-      res.status(200).end();
+      res.status(200).send(data.rows[0]);
     })
     .catch((err) => {
-      res.send(err);
-      res.status(500).end();
+      res.status(500).send(err);
     });
 };
 
@@ -58,8 +53,7 @@ const rateHelpful = (req, res) => {
       res.status(204).end();
     })
     .catch((err) => {
-      res.send(err);
-      res.status(500).end();
+      res.status(500).send(err);
     });
 };
 
@@ -70,8 +64,7 @@ const report = (req, res) => {
       res.status(204).end();
     })
     .catch((err) => {
-      res.send(err);
-      res.status(500).end();
+      res.status(500).send(err);
     });
 };
 
