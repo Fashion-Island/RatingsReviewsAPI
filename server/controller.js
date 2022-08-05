@@ -21,8 +21,7 @@ const getAll = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).end();
+      res.status(500).send(err);
     });
 };
 
@@ -32,8 +31,7 @@ const post = (req, res) => (
       res.status(201).end();
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).end();
+      res.status(500).send(err);
     })
 );
 
