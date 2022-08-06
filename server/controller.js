@@ -22,7 +22,7 @@ const getAll = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).send(err);
+      res.status(400).send(err);
     });
 };
 
@@ -44,7 +44,7 @@ const getOne = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).send(err);
+      res.status(400).send(err);
     });
 };
 
