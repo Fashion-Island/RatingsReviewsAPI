@@ -21,7 +21,6 @@ const getAll = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).send(err);
     });
 };
@@ -43,7 +42,6 @@ const getOne = (req, res) => {
       res.status(200).send(data.rows[0]);
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).send(err);
     });
 };
