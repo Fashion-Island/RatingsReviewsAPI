@@ -11,7 +11,7 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ['Atelier-Server1'],
+  app_name: [process.env.NEW_RELIC_APP],
   /**
    * Your New Relic license key.
    */
