@@ -3,7 +3,9 @@ This project re-engineered a legacy backend service of a fashion e-commerce webs
 
 ## Endpoints
 <details>
-<summary>`GET /reviews/`</summary>
+<summary>List Reviews</summary>
+
+`GET /reviews/`:
 Returns a list of reviews for a particular product. This list does not include any reported reviews.
 
 Query parameters:
@@ -73,7 +75,9 @@ Sample response: `Status: 200 OK`
 ```
 </details>
 <details>
-<summary>`GET /reviews/meta`</summary>
+<summary>Get Review Metadata</summary>
+
+`GET /reviews/meta`:
 Returns review metadata for a given product.
 
 Query parameters:
@@ -128,7 +132,9 @@ Sample response: `Status: 200 OK`
 ```
 </details>
 <details>
-<summary>`POST /reviews`</summary>
+<summary>Add a Review</summary>
+
+`POST /reviews`:
 Adds a review for the given product.
 
 Body parameters:
@@ -188,7 +194,9 @@ Body parameters:
 Sample response: `Status: 201 CREATED`
 </details>
 <details>
-<summary>`PUT /reviews/:review_id/helpful`</summary>
+<summary>Mark Review as Helpful</summary>
+
+`PUT /reviews/:review_id/helpful`:
 Updates a review to show it was found helpful.
 
 Parameters:
@@ -208,7 +216,9 @@ Parameters:
 Sample response: `Status: 204 NO CONTENT`
 </details>
 <details>
-<summary>`PUT /reviews/:review_id/report`</summary>
+<summary>Report Review</summary>
+
+`PUT /reviews/:review_id/report`:
 Updates a review to show it was reported. Note, this action does not delete the review, but the review will not be returned in the above GET request.
 
 Parameters:
