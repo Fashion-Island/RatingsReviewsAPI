@@ -2,3 +2,4 @@ node_modules
 db/rawdata
 db/atelier-rr-db-v2.pgsql
 .env
+*.DS_Store
